@@ -84,7 +84,7 @@ public class UserProfileFragment extends Fragment {
     private ValueEventListener userListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            //Lấy thông tin của user về và cập nhật lên giao diện
+            //Get the user's information and update to the interface
             listConfig.clear();
             myAccount = dataSnapshot.getValue(User.class);
 
@@ -104,7 +104,7 @@ public class UserProfileFragment extends Fragment {
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-            //Có lỗi xảy ra, không lấy đc dữ liệu
+            //An error occured : not getting data
             Log.e(UserProfileFragment.class.getName(), "loadPost:onCancelled", databaseError.toException());
         }
     };
@@ -141,7 +141,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     /**
-     * Khi click vào avatar thì bắn intent mở trình xem ảnh mặc định để chọn ảnh
+     * When you click on the avatar it opens the default viewer to select an image
      */
     private View.OnClickListener onAvatarClick = new View.OnClickListener() {
         @Override
@@ -233,7 +233,7 @@ public class UserProfileFragment extends Fragment {
     }
 
     /**
-     * Xóa list cũ và cập nhật lại list data mới
+     * Delete the old list and update the new list data
      * @param myAccount
      */
     public void setupArrayListInfo(User myAccount){
@@ -254,7 +254,7 @@ public class UserProfileFragment extends Fragment {
     private void setImageAvatar(Context context, String imgBase64){
         try {
             Resources res = getResources();
-            //Nếu chưa có avatar thì để hình mặc định
+            //If you do not have the avatar leave the default image
             Bitmap src;
             if (imgBase64.equals("default")) {
                 src = BitmapFactory.decodeResource(res, R.drawable.default_avata);
@@ -314,7 +314,7 @@ public class UserProfileFragment extends Fragment {
                                 .inflate(R.layout.dialog_edit_username,  (ViewGroup) getView(), false);
                         final EditText input = (EditText)vewInflater.findViewById(R.id.edit_username);
                         input.setText(myAccount.name);
-                        /*Hiển thị dialog với dEitText cho phép người dùng nhập username mới*/
+                        /*Displaying a dialog with editText allows the user to enter a new username*/
                         new AlertDialog.Builder(context)
                                 .setTitle("Edit username")
                                 .setView(vewInflater)
@@ -359,7 +359,7 @@ public class UserProfileFragment extends Fragment {
         }
 
         /**
-         * Cập nhật username mới vào SharedPreference và thay đổi trên giao diện
+         * Update the new username to SharedPreference and change the interface
          */
         private void changeUserName(String newName){
             userDB.child("name").setValue(newName);

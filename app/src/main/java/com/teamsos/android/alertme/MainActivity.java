@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar topToolbar = findViewById(R.id.toolbar);
         if(topToolbar != null) {
             setSupportActionBar(topToolbar);
-            Objects.requireNonNull(getSupportActionBar()).setTitle("Apachat");
+            Objects.requireNonNull(getSupportActionBar()).setTitle("AlertMe");
         }
 
         viewPager = findViewById(R.id.viewpager);
@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
         //This is for the About menu item in the top-right hand corner
         //noinspection SimplifiableIfStatement
         if (id == R.id.about) {
-            Toast.makeText(this, "Apachat version 1.0", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "AlertMe version 1.0", Toast.LENGTH_LONG).show();
             return true;
         }
 
