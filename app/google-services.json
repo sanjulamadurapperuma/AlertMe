@@ -1,0 +1,107 @@
+{
+  "project_info": {
+    "project_number": "745523677722",
+    "firebase_url": "https://assault-prevention-app-v1.firebaseio.com",
+    "project_id": "assault-prevention-app-v1",
+    "storage_bucket": "assault-prevention-app-v1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745523677722:android:d6f2054a0647f43b",
+        "android_client_info": {
+          "package_name": "com.sanjula.android.pp02_cwk_02_v1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "745523677722-v4jthb7oekr2r0luot2evllrfjbncck6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sanjula.android.pp02_cwk_02_v1",
+            "certificate_hash": "b57ebbba26ef7301dd8513080500a8df15482512"
+          }
+        },
+        {
+          "client_id": "745523677722-e4ggntvliavq9oviabrjpudc75hgggre.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "745523677722-e4ggntvliavq9oviabrjpudc75hgggre.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3fMVkXjpnhGyQj4QECh6Zx4ZjjnIBJKY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "745523677722-e4ggntvliavq9oviabrjpudc75hgggre.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745523677722:android:afc6be6fb89cb095",
+        "android_client_info": {
+          "package_name": "com.teamsos.android.alertme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "745523677722-3rqfg2s6fjjnhcgn1d4c39ulcqtl2t5s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.teamsos.android.alertme",
+            "certificate_hash": "b57ebbba26ef7301dd8513080500a8df15482512"
+          }
+        },
+        {
+          "client_id": "745523677722-e4ggntvliavq9oviabrjpudc75hgggre.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "745523677722-e4ggntvliavq9oviabrjpudc75hgggre.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3fMVkXjpnhGyQj4QECh6Zx4ZjjnIBJKY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "745523677722-e4ggntvliavq9oviabrjpudc75hgggre.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
