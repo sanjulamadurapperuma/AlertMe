@@ -43,6 +43,9 @@
         <activity android:name="com.teamsos.android.alertme.chat.ui.AddGroupActivity"
             android:theme="@style/MyThemeNoActionbar"/>
         <activity android:name=".ui.help_and_support.AppInformation" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
         <activity android:name=".ui.map.MapsActivity"/>
         <activity android:name=".ui.help_and_support.HelpActivity"/>
 
