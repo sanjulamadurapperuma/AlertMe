@@ -4,11 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,12 +29,14 @@ import com.teamsos.android.alertme.chat.ui.FriendsFragment;
 import com.teamsos.android.alertme.chat.ui.GroupFragment;
 import com.teamsos.android.alertme.chat.ui.LoginActivity;
 import com.teamsos.android.alertme.chat.ui.UserProfileFragment;
+import com.teamsos.android.alertme.ui.help_and_support.HelpActivity;
+import com.teamsos.android.alertme.ui.map.MapsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     //AppCompatActivity used for action bar features in
     //Android Support Library
     private static String TAG = "MainActivity";
@@ -46,19 +52,24 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;//extends object implements internalTokenProvider
     private FirebaseAuth.AuthStateListener mAuthListener;//Listener for change in authentication states
     private FirebaseUser user;//User of current instance
-
+    DrawerLayout drawerLayout;
+    Toolbar toolbar;
+    ActionBarDrawerToggle drawerToggle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Initializing the main activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Toolbar topToolbar = findViewById(R.id.toolbar);
-        if(topToolbar != null) {
-            setSupportActionBar(topToolbar);
-            Objects.requireNonNull(getSupportActionBar()).setTitle("AlertMe");
-        }
-
+        toolbar = findViewById(R.id.toolbar);
+        setTitle("AlertMe");
+        setSupportActionBar(toolbar);
+        drawerLayout = findViewById(R.id.main_drawer);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        NavigationView navigationView = findViewById(R.id.nav_barMain);
+        navigationView.setNavigationItemSelectedListener(this);
         viewPager = findViewById(R.id.viewpager);
         floatButton = findViewById(R.id.fab);
         initTab();
@@ -185,6 +196,9 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
 
         //This is for the About menu item in the top-right hand corner
         //noinspection SimplifiableIfStatement
@@ -194,6 +208,38 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        NavigationView navigationView = findViewById(R.id.nav_barMain);
+       navigationView.setNavigationItemSelectedListener(this);
+       int id = item.getItemId();
+       if (id == R.id.nav_chat) {
+           Intent chat = new Intent(MainActivity.this, MainActivity.class);
+           overridePendingTransition(0, 0);
+           chat.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+           startActivity(chat);
+
+       } else if (id == R.id.nav_map) {
+           Intent map = new Intent(MainActivity.this, MapsActivity.class);
+           map.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+           overridePendingTransition(0, 0);
+           startActivity(map);
+       } else if (id == R.id.nav_settings) {
+           /*Intent settings = new Intent(MainActivity.this, Settings.class);
+           overridePendingTransition(0, 0);
+           settings.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+           startActivity(settings);*/
+       } else if (id == R.id.nav_help) {
+           Intent help = new Intent(MainActivity.this, HelpActivity.class);
+           overridePendingTransition(0, 0);
+           help.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+           startActivity(help);
+       } /**/
+        drawerLayout = findViewById(R.id.main_drawer);
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     /**

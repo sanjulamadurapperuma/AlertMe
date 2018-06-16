@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main_drawer"
     android:fitsSystemWindows="true"
-    tools:context="com.sanjula.android.pp02_cwk_02_v1.MainActivity">
+    tools:context=".MainActivity">
+<android.support.design.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -15,12 +19,7 @@
         android:focusableInTouchMode="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:background="@color/colorPrimary"
-            android:id="@+id/toolbar" />
+        <include layout="@layout/toolbar_layout"/>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
@@ -45,3 +44,12 @@
         />
 
 </android.support.design.widget.CoordinatorLayout>
+    <android.support.design.widget.NavigationView
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    app:menu="@menu/navigation_menu"
+    android:layout_gravity="start"
+    android:id="@+id/nav_barMain"
+    app:headerLayout="@layout/navigation_header">
+    </android.support.design.widget.NavigationView>
+</android.support.v4.widget.DrawerLayout>
