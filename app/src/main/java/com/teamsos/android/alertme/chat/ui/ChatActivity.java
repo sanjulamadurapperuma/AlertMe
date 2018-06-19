@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +32,7 @@ import com.teamsos.android.alertme.chat.model.Message;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -72,14 +74,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         editWriteMessage = (EditText) findViewById(R.id.editWriteMessage);
         if (idFriend != null && nameFriend != null) {
-            getSupportActionBar().setTitle(nameFriend);
+            (Objects.requireNonNull(getSupportActionBar())).setTitle(nameFriend);
             linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             recyclerChat = (RecyclerView) findViewById(R.id.recyclerChat);
             recyclerChat.setLayoutManager(linearLayoutManager);
             adapter = new ListMessageAdapter(this, Conversation, bitmapAvataFriend, bitmapAvataUser);
             FirebaseDatabase.getInstance().getReference().child("message/" + roomId).addChildEventListener(new ChildEventListener() {
                 @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                     if (dataSnapshot.getValue() != null) {
                         HashMap mapMessage = (HashMap) dataSnapshot.getValue();
                         Message newMessage = new Message();
@@ -94,22 +96,22 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
 
                 }
 
                 @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
                 }
 
                 @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
 
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
             });
@@ -169,8 +171,9 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         bitmapAvataDB = new HashMap<>();
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ChatActivity.VIEW_TYPE_FRIEND_MESSAGE) {
             View view = LayoutInflater.from(context).inflate(R.layout.rc_item_message_friend, parent, false);
             return new ItemMessageFriendHolder(view);
@@ -182,7 +185,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemMessageFriendHolder) {
             ((ItemMessageFriendHolder) holder).txtContent.setText(Conversation.getListMessageData().get(position).text);
             Bitmap currentAvata = bitmapAvata.get(Conversation.getListMessageData().get(position).idSender);
@@ -194,7 +197,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     bitmapAvataDB.put(id, FirebaseDatabase.getInstance().getReference().child("user/" + id + "/avata"));
                     bitmapAvataDB.get(id).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() != null) {
                                 String avataStr = (String) dataSnapshot.getValue();
                                 if(!avataStr.equals(StaticConfig.STR_DEFAULT_BASE64)) {
@@ -208,7 +211,7 @@ class ListMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
                     });

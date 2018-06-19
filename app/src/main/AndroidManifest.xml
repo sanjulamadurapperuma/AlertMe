@@ -2,26 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.teamsos.android.alertme">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name="com.teamsos.android.alertme.chat.data.FirebaseApp"
+        android:name=".chat.data.FirebaseApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.teamsos.android.alertme.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.teamsos.android.alertme.chat.ui.LoginActivity"
+            android:name=".chat.ui.LoginActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/TranslucentBackground">
@@ -32,26 +32,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.teamsos.android.alertme.chat.ui.RegisterActivity"
+            android:name=".chat.ui.RegisterActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/Translucent" />
         <activity
-            android:name="com.teamsos.android.alertme.chat.ui.ChatActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName="com.teamsos.android.alertme.MainActivity"/>
-        <activity android:name="com.teamsos.android.alertme.chat.ui.AddGroupActivity"
-            android:theme="@style/MyThemeNoActionbar"/>
+            android:name=".chat.ui.ChatActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".chat.ui.AddGroupActivity"
+            android:theme="@style/MyThemeNoActionbar" />
         <activity android:name=".ui.help_and_support.AppInformation" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        <activity android:name=".ui.map.MapsActivity"/>
-        <activity android:name=".ui.help_and_support.HelpActivity"/>
 
-        <service android:name="com.teamsos.android.alertme.chat.service.FriendChatService"
+        <activity android:name=".ui.map.MapsActivity" />
+        <activity android:name=".ui.help_and_support.HelpActivity" />
+
+        <service
+            android:name=".chat.service.FriendChatService"
             android:exported="false"
-            android:persistent= "true" />
+            android:persistent="true" />
+
+        <activity android:name=".ui.SettingsActivity"/>
     </application>
 
 </manifest>

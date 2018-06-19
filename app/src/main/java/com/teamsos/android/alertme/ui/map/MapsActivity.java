@@ -39,6 +39,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private GoogleMap mMap;
+
     private DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("location");
 
 

@@ -29,6 +29,7 @@ import com.teamsos.android.alertme.chat.ui.FriendsFragment;
 import com.teamsos.android.alertme.chat.ui.GroupFragment;
 import com.teamsos.android.alertme.chat.ui.LoginActivity;
 import com.teamsos.android.alertme.chat.ui.UserProfileFragment;
+import com.teamsos.android.alertme.ui.SettingsActivity;
 import com.teamsos.android.alertme.ui.help_and_support.HelpActivity;
 import com.teamsos.android.alertme.ui.map.MapsActivity;
 
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TabLayout tabLayout = null;//Horizontal layout for tabs
     public static String STR_FRIEND_FRAGMENT = "FRIEND";//Name of first tab
     public static String STR_GROUP_FRAGMENT = "GROUP";//Name of second tab
-    public static String STR_INFO_FRAGMENT = "INFO";//Name of third tab
+//    public static String STR_INFO_FRAGMENT = "INFO";//Name of third tab
 
     private FloatingActionButton floatButton;//Float button in bottom-right
     private ViewPagerAdapter adapter;//Managing page views
@@ -138,14 +139,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(tabIcons[0]);
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(tabIcons[1]);
-        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(tabIcons[2]);
+//        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(tabIcons[2]);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new FriendsFragment(), STR_FRIEND_FRAGMENT);
         adapter.addFrag(new GroupFragment(), STR_GROUP_FRAGMENT);
-        adapter.addFrag(new UserProfileFragment(), STR_INFO_FRAGMENT);
+//        adapter.addFrag(new UserProfileFragment(), STR_INFO_FRAGMENT);
         floatButton.setOnClickListener(((FriendsFragment) adapter.getItem(0))
                 .onClickFloatButton.getInstance(this));
         viewPager.setAdapter(adapter);
@@ -227,10 +228,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
            overridePendingTransition(0, 0);
            startActivity(map);
        } else if (id == R.id.nav_settings) {
-           /*Intent settings = new Intent(MainActivity.this, Settings.class);
+           Intent settings = new Intent(MainActivity.this, SettingsActivity.class);
            overridePendingTransition(0, 0);
            settings.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-           startActivity(settings);*/
+           startActivity(settings);
        } else if (id == R.id.nav_help) {
            Intent help = new Intent(MainActivity.this, HelpActivity.class);
            overridePendingTransition(0, 0);

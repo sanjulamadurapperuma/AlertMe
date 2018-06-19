@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimary"
-    android:minHeight="?attr/actionBarSize"
+    android:minHeight="?android:attr/actionBarSize"
     android:id="@+id/toolbar"
     app:theme="@style/ToolbarTheme">
 

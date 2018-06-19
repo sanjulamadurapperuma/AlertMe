@@ -135,7 +135,7 @@ public class HelpActivity extends AppCompatActivity implements NavigationView.On
             //Version
             String version = "Version: " + BuildConfig.VERSION_CODE;
             //App Name
-            String appName = "App: com.RescueMe";
+            String appName = "App: com.AlertMe";
             // serial number
             String simSerialNo = "Sim Serial Number: " + telephonyManager.getSimSerialNumber();
             // sim operator name

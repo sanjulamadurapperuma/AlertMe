@@ -1,311 +1,435 @@
-//package com.teamsos.android.alertme.ui;
-//
-//import android.content.DialogInterface;
-//import android.content.Intent;
-//import android.net.Uri;
-//import android.os.Bundle;
-//import android.support.annotation.NonNull;
-//import android.support.design.widget.NavigationView;
-//import android.support.v4.view.GravityCompat;
-//import android.support.v4.widget.DrawerLayout;
-//import android.support.v7.app.ActionBarDrawerToggle;
-//import android.support.v7.app.AlertDialog;
-//import android.support.v7.app.AppCompatActivity;
-//import android.support.v7.widget.Toolbar;
-//import android.view.MenuItem;
-//import android.view.View;
-//import android.widget.Button;
-//import android.widget.ProgressBar;
-//import android.widget.Toast;
-//
-//import com.google.android.gms.tasks.OnCompleteListener;
-//import com.google.android.gms.tasks.Task;
-//import com.google.firebase.auth.FirebaseAuth;
-//import com.google.firebase.auth.FirebaseUser;
-//import com.teamsos.android.alertme.MainActivity;
-//import com.teamsos.android.alertme.R;
-//import com.teamsos.android.alertme.chat.data.FriendDB;
-//import com.teamsos.android.alertme.chat.data.GroupDB;
-//import com.teamsos.android.alertme.chat.service.ServiceUtils;
-//import com.teamsos.android.alertme.ui.help_and_support.HelpActivity;
-//import com.teamsos.android.alertme.ui.map.MapsActivity;
-//
-//public class SettingsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-//    private Toolbar toolbar;
-//    private DrawerLayout drawerLayout;
-//    private ActionBarDrawerToggle drawerToggle;
-//    private Button btnChangeEmail, btnChangePassword, btnRemoveUser,
-//            changeEmail, changePassword, sendEmail, remove, inviteFriends, privacy, nofications;
-//
-//    private android.widget.EditText oldEmail, newEmail, password, newPassword;
-//    private android.widget.ProgressBar progressBar;
-//    private FirebaseAuth.AuthStateListener authListener;
-//    private FirebaseAuth auth;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_settings);
-//        toolbar = findViewById(R.id.toolbar_settings);
-//        setSupportActionBar(toolbar);
-//        setTitle("Settings");
-//        drawerLayout = findViewById(R.id.settings_drawer);
-//        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
-//        drawerLayout.addDrawerListener(drawerToggle);
-//        drawerToggle.syncState();
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        NavigationView navigationView = findViewById(R.id.nav_barSettings);
-//        navigationView.setNavigationItemSelectedListener(this);
-//
-//        inviteFriends = findViewById(R.id.invite_friends);
-//
-//        inviteFriends.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Intent shareIntent = new Intent(Intent.ACTION_SENDTO);
-//                shareIntent.setData(Uri.parse("mailto:"));
-//                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "AlertMe\nAssault Prevention Application");
-//                shareIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=co.feeld&_branch_match_id=458664803132089955");
-//                startActivity(Intent.createChooser(shareIntent, "Share app via..."));}
-//        });
-//
-//        auth = FirebaseAuth.getInstance();
-//
-//        //get current user
-//        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//
-//        authListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (user == null) {
-//                    // user auth state is changed - user is null
-//                    // launch login activity
-//                    startActivity(new Intent(SettingsActivity.this, com.teamsos.android.alertme.chat.ui.LoginActivity.class));
-//                    finish();
-//                }
-//            }
-//        };
-//
-//        btnChangeEmail =  findViewById(R.id.change_email_button);
-//        btnChangePassword =  findViewById(R.id.change_password_button);
-//        btnRemoveUser =  findViewById(R.id.remove_user_button);
-//        changeEmail =  findViewById(R.id.changeEmail);
-//        changePassword =  findViewById(R.id.changePass);
-//        sendEmail =  findViewById(R.id.send);
-//        remove =  findViewById(R.id.remove);
-//        privacy = findViewById(R.id.privacy);
-//        nofications = findViewById(R.id.notifs);
-//
-//        oldEmail =  findViewById(R.id.old_email);
-//        newEmail =  findViewById(R.id.new_email);
-//        password =  findViewById(R.id.password);
-//        newPassword =  findViewById(R.id.newPassword);
-//
-//        oldEmail.setVisibility(View.GONE);
-//        newEmail.setVisibility(View.GONE);
-//        password.setVisibility(View.GONE);
-//        newPassword.setVisibility(View.GONE);
-//        changeEmail.setVisibility(View.GONE);
-//        changePassword.setVisibility(View.GONE);
-//        sendEmail.setVisibility(View.GONE);
-//        remove.setVisibility(View.GONE);
-//
-//        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-//
-//        if (progressBar != null) {
-//            progressBar.setVisibility(View.GONE);
-//        }
-//
-//        btnChangeEmail.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                oldEmail.setVisibility(View.GONE);
-//                newEmail.setVisibility(View.VISIBLE);
-//                password.setVisibility(View.GONE);
-//                newPassword.setVisibility(View.GONE);
-//                changeEmail.setVisibility(View.VISIBLE);
-//                changePassword.setVisibility(View.GONE);
-//                sendEmail.setVisibility(View.GONE);
-//                remove.setVisibility(View.GONE);
-//            }
-//        });
-//
-//        changeEmail.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                progressBar.setVisibility(View.VISIBLE);
-//                if (user != null && !newEmail.getText().toString().trim().equals("")) {
-//                    user.updateEmail(newEmail.getText().toString().trim())
-//                            .addOnCompleteListener(new com.google.android.gms.tasks.OnCompleteListener<Void>() {
-//                                @Override
-//                                public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-//                                    if (task.isSuccessful()) {
-//                                        android.widget.Toast.makeText(SettingsActivity.this, "Email address is updated. Please sign in with new email id!", android.widget.Toast.LENGTH_LONG).show();
-//                                        auth.signOut();
-//                                        progressBar.setVisibility(View.GONE);
-//                                    } else {
-//                                        Toast.makeText(SettingsActivity.this, "Failed to update email!", Toast.LENGTH_LONG).show();
-//                                        progressBar.setVisibility(View.GONE);
-//                                    }
-//                                }
-//                            });
-//                } else if (newEmail.getText().toString().trim().equals("")) {
-//                    newEmail.setError("Enter email");
-//                    progressBar.setVisibility(View.GONE);
-//                }
-//            }
-//        });
-//
-//        btnChangePassword.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                oldEmail.setVisibility(View.GONE);
-//                newEmail.setVisibility(View.GONE);
-//                password.setVisibility(View.GONE);
-//                newPassword.setVisibility(View.VISIBLE);
-//                changeEmail.setVisibility(View.GONE);
-//                changePassword.setVisibility(View.VISIBLE);
-//                sendEmail.setVisibility(View.GONE);
-//                remove.setVisibility(View.GONE);
-//            }
-//        });
-//
-//        changePassword.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                progressBar.setVisibility(View.VISIBLE);
-//                if (user != null && !newPassword.getText().toString().trim().equals("")) {
-//                    if (newPassword.getText().toString().trim().length() < 6) {
-//                        newPassword.setError("Password too short, enter minimum 6 characters");
-//                        progressBar.setVisibility(View.GONE);
-//                    } else {
-//                        user.updatePassword(newPassword.getText().toString().trim())
-//                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<Void> task) {
-//                                        if (task.isSuccessful()) {
-//                                            Toast.makeText(SettingsActivity.this, "Password is updated, sign in with new password!", Toast.LENGTH_SHORT).show();
-//                                            auth.signOut();
-//                                            progressBar.setVisibility(View.GONE);
-//                                        } else {
-//                                            Toast.makeText(SettingsActivity.this, "Failed to update password!", Toast.LENGTH_SHORT).show();
-//                                            progressBar.setVisibility(View.GONE);
-//                                        }
-//                                    }
-//                                });
-//                    }
-//                } else if (newPassword.getText().toString().trim().equals("")) {
-//                    newPassword.setError("Enter password");
-//                    progressBar.setVisibility(View.GONE);
-//                }
-//            }
-//        });
-//
-//
-//
-//
-//        final String message = "Are you sure you want to delete your account?";
-//        btnRemoveUser.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                new AlertDialog.Builder(SettingsActivity.this).setTitle("Confirm Account Termination").setMessage(message).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//
-//
-//                        progressBar.setVisibility(View.VISIBLE);
-//                        if (user != null) {
-//                            user.delete()
-//                                    .addOnCompleteListener(new com.google.android.gms.tasks.OnCompleteListener<Void>() {
-//                                        @Override
-//                                        public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-//                                            if (task.isSuccessful()) {
-//                                                android.widget.Toast.makeText(SettingsActivity.this, "Your profile is deleted:( Create a account now!", android.widget.Toast.LENGTH_SHORT).show();
-//                                                startActivity(new Intent(SettingsActivity.this, com.teamsos.android.alertme.chat.ui.LoginActivity.class));
-//                                                finish();
-//                                                progressBar.setVisibility(View.GONE);
-//                                            } else {
-//                                                android.widget.Toast.makeText(SettingsActivity.this, "Failed to delete your account!", android.widget.Toast.LENGTH_SHORT).show();
-//                                                progressBar.setVisibility(View.GONE);
-//                                            }
-//                                        }
-//                                    });
-//                        }
-//                    }
-//                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        return;
-//                    }
-//                }).show();
-//            }
-//        });
-//        privacy.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://policies.google.com/privacy")));
-//            }
-//        });
-//
-//    }
-//
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        if (drawerToggle.onOptionsItemSelected(item)) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//
-//    }
-//
-//    @Override
-//    public void onBackPressed() {
-//        startActivity(new Intent(SettingsActivity.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
-//        finish();
-//    }
-//    @Override
-//    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//        NavigationView navigationView = findViewById(R.id.nav_barSettings);
-//        navigationView.setNavigationItemSelectedListener(this);
-//        int id = item.getItemId();
-//        if (id == R.id.nav_chat) {
-//            Intent chat = new Intent(SettingsActivity.this, MainActivity.class);
-//            overridePendingTransition(0, 0);
-//            chat.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//            startActivity(chat);
-//
-//        } else if (id == R.id.nav_map) {
-//            Intent map = new Intent(SettingsActivity.this, MapsActivity.class);
-//            map.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//            overridePendingTransition(0, 0);
-//            startActivity(map);
-//        } else if (id == R.id.nav_settings) {
-//            Intent settings = new Intent(SettingsActivity.this, SettingsActivity.class);
-//            overridePendingTransition(0, 0);
-//            settings.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//            startActivity(settings);
-//        } else if (id == R.id.nav_help) {
-//            Intent help = new Intent(SettingsActivity.this, HelpActivity.class);
-//            overridePendingTransition(0, 0);
-//            help.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//            startActivity(help);
-//        } else if (id == R.id.nav_logout) {
-//            FirebaseAuth.getInstance().signOut();
-//            FriendDB.getInstance(this).dropDB();
-//            GroupDB.getInstance(this).dropDB();
-//            ServiceUtils.stopServiceFriendChat(this.getApplicationContext(), true);
-//            overridePendingTransition(0, 0);
-//            finish();
-//        }
-//
-//        DrawerLayout drawerLayout = findViewById(R.id.settings_drawer);
-//        drawerLayout.closeDrawer(GravityCompat.START);
-//        return true;
-//    }
-//}
+package com.teamsos.android.alertme.ui;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.teamsos.android.alertme.R;
+import com.teamsos.android.alertme.chat.data.FriendDB;
+import com.teamsos.android.alertme.chat.data.GroupDB;
+import com.teamsos.android.alertme.chat.data.SharedPreferenceHelper;
+import com.teamsos.android.alertme.chat.data.StaticConfig;
+import com.teamsos.android.alertme.chat.model.Configuration;
+import com.teamsos.android.alertme.chat.model.User;
+import com.teamsos.android.alertme.chat.service.ServiceUtils;
+import com.teamsos.android.alertme.chat.util.ImageUtils;
+import com.yarolegovich.lovelydialog.LovelyInfoDialog;
+import com.yarolegovich.lovelydialog.LovelyProgressDialog;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+public class SettingsActivity extends AppCompatActivity {
+    TextView tvUserName;
+    ImageView avatar;
+
+    private List<Configuration> listConfig = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private UserInfoAdapter infoAdapter;
+
+    private static final String USERNAME_LABEL = "Username";
+    private static final String EMAIL_LABEL = "Email";
+    private static final String SIGNOUT_LABEL = "Sign out";
+    private static final String RESETPASS_LABEL = "Change Password";
+
+    private static final int PICK_IMAGE = 1994;
+    private LovelyProgressDialog waitingDialog;
+
+    private DatabaseReference userDB;
+    private FirebaseAuth mAuth;
+    private User myAccount;
+    private Context context;
+
+    public SettingsActivity() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        userDB = FirebaseDatabase.getInstance().getReference().child("user").child(StaticConfig.UID);
+        userDB.addListenerForSingleValueEvent(userListener);
+        mAuth = FirebaseAuth.getInstance();
+
+        // Inflate the layout for this fragment
+        setContentView(R.layout.activity_settings);
+        avatar = (ImageView) findViewById(R.id.img_avatar);
+        avatar.setOnClickListener(onAvatarClick);
+        tvUserName = (TextView)findViewById(R.id.tv_username);
+
+        SharedPreferenceHelper prefHelper = SharedPreferenceHelper.getInstance(context);
+        myAccount = prefHelper.getUserInfo();
+        setupArrayListInfo(myAccount);
+        setImageAvatar(context, myAccount.avata);
+        tvUserName.setText(myAccount.name);
+
+        recyclerView = (RecyclerView)findViewById(R.id.info_recycler_view);
+        infoAdapter = new UserInfoAdapter(listConfig);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(infoAdapter);
+
+        waitingDialog = new LovelyProgressDialog(context);
+    }
+
+    private ValueEventListener userListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            //Get the user's information and update to the interface
+            listConfig.clear();
+            myAccount = dataSnapshot.getValue(User.class);
+
+            setupArrayListInfo(myAccount);
+            if(infoAdapter != null){
+                infoAdapter.notifyDataSetChanged();
+            }
+
+            if(tvUserName != null){
+                tvUserName.setText(myAccount.name);
+            }
+
+            setImageAvatar(context, myAccount.avata);
+            SharedPreferenceHelper preferenceHelper = SharedPreferenceHelper.getInstance(context);
+            preferenceHelper.saveUserInfo(myAccount);
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            //An error occured : not getting data
+            Log.e(SettingsActivity.class.getName(), "loadPost:onCancelled", databaseError.toException());
+        }
+    };
+
+
+    /**
+     * When you click on the avatar it opens the default viewer to select an image
+     */
+    private View.OnClickListener onAvatarClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            new AlertDialog.Builder(context)
+                    .setTitle("Avatar")
+                    .setMessage("Are you sure want to change avatar profile?")
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_PICK);
+                            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    }).show();
+        }
+    };
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK) {
+            if (data == null) {
+                Toast.makeText(context, "Có lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_LONG).show();
+                return;
+            }
+            try {
+                InputStream inputStream = context.getContentResolver().openInputStream(data.getData());
+
+                Bitmap imgBitmap = BitmapFactory.decodeStream(inputStream);
+                imgBitmap = ImageUtils.cropToSquare(imgBitmap);
+                InputStream is = ImageUtils.convertBitmapToInputStream(imgBitmap);
+                final Bitmap liteImage = ImageUtils.makeImageLite(is,
+                        imgBitmap.getWidth(), imgBitmap.getHeight(),
+                        ImageUtils.AVATAR_WIDTH, ImageUtils.AVATAR_HEIGHT);
+
+                String imageBase64 = ImageUtils.encodeBase64(liteImage);
+                myAccount.avata = imageBase64;
+
+                waitingDialog.setCancelable(false)
+                        .setTitle("Avatar updating....")
+                        .setTopColorRes(R.color.colorPrimary)
+                        .show();
+
+                userDB.child("avata").setValue(imageBase64)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+
+                                    waitingDialog.dismiss();
+                                    SharedPreferenceHelper preferenceHelper = SharedPreferenceHelper.getInstance(context);
+                                    preferenceHelper.saveUserInfo(myAccount);
+                                    avatar.setImageDrawable(ImageUtils.roundedImage(context, liteImage));
+
+                                    new LovelyInfoDialog(context)
+                                            .setTopColorRes(R.color.colorPrimary)
+                                            .setTitle("Success")
+                                            .setMessage("Update avatar successfully!")
+                                            .show();
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                waitingDialog.dismiss();
+                                Log.d("Update Avatar", "failed");
+                                new LovelyInfoDialog(context)
+                                        .setTopColorRes(R.color.colorAccent)
+                                        .setTitle("False")
+                                        .setMessage("False to update avatar")
+                                        .show();
+                            }
+                        });
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Delete the old list and update the new list data
+     * @param myAccount
+     */
+    public void setupArrayListInfo(User myAccount){
+        listConfig.clear();
+        Configuration userNameConfig = new Configuration(USERNAME_LABEL, myAccount.name, R.mipmap.ic_account_box);
+        listConfig.add(userNameConfig);
+
+        Configuration emailConfig = new Configuration(EMAIL_LABEL, myAccount.email, R.mipmap.ic_email);
+        listConfig.add(emailConfig);
+
+        Configuration resetPass = new Configuration(RESETPASS_LABEL, "", R.mipmap.ic_restore);
+        listConfig.add(resetPass);
+
+        Configuration signout = new Configuration(SIGNOUT_LABEL, "", R.mipmap.ic_power_settings);
+        listConfig.add(signout);
+    }
+
+    private void setImageAvatar(Context context, String imgBase64){
+        try {
+            Resources res = getResources();
+            //If you do not have the avatar leave the default image
+            Bitmap src;
+            if (imgBase64.equals("default")) {
+                src = BitmapFactory.decodeResource(res, R.drawable.default_avata);
+            } else {
+                byte[] decodedString = Base64.decode(imgBase64, Base64.DEFAULT);
+                src = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            }
+
+            avatar.setImageDrawable(ImageUtils.roundedImage(context, src));
+        }catch (Exception e){
+        }
+    }
+
+    @Override
+    public void onDestroy (){
+        super.onDestroy();
+    }
+
+    public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHolder>{
+        private List<Configuration> profileConfig;
+
+        public UserInfoAdapter(List<Configuration> profileConfig){
+            this.profileConfig = profileConfig;
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.list_info_item_layout, parent, false);
+            return new ViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            final Configuration config = profileConfig.get(position);
+            holder.label.setText(config.getLabel());
+            holder.value.setText(config.getValue());
+            holder.icon.setImageResource(config.getIcon());
+            ((RelativeLayout)holder.label.getParent()).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(config.getLabel().equals(SIGNOUT_LABEL)){
+                        FirebaseAuth.getInstance().signOut();
+                        FriendDB.getInstance(getApplicationContext()).dropDB();
+                        GroupDB.getInstance(getApplicationContext()).dropDB();
+                        ServiceUtils.stopServiceFriendChat(getApplicationContext(), true);
+                        finish();
+                    }
+
+                    if(config.getLabel().equals(USERNAME_LABEL)){
+                        View vewInflater = LayoutInflater.from(context)
+                                .inflate(R.layout.dialog_edit_username,  (ViewGroup) view, false);
+                        final EditText input = (EditText)vewInflater.findViewById(R.id.edit_username);
+                        input.setText(myAccount.name);
+                        /*Displaying a dialog with editText allows the user to enter a new username*/
+                        new AlertDialog.Builder(context)
+                                .setTitle("Edit username")
+                                .setView(vewInflater)
+                                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        String newName = input.getText().toString();
+                                        if(!myAccount.name.equals(newName)){
+                                            changeUserName(newName);
+                                        }
+                                        dialogInterface.dismiss();
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                }).show();
+                    }
+
+                    if(config.getLabel().equals(RESETPASS_LABEL)){
+                        new AlertDialog.Builder(context)
+                                .setTitle("Password")
+                                .setMessage("Are you sure want to reset password?")
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        resetPassword(myAccount.email);
+                                        dialogInterface.dismiss();
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                }).show();
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update the new username to SharedPreference and change the interface
+         */
+        private void changeUserName(String newName){
+            userDB.child("name").setValue(newName);
+
+
+            myAccount.name = newName;
+            SharedPreferenceHelper prefHelper = SharedPreferenceHelper.getInstance(context);
+            prefHelper.saveUserInfo(myAccount);
+
+            tvUserName.setText(newName);
+            setupArrayListInfo(myAccount);
+        }
+
+        void resetPassword(final String email) {
+            mAuth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            new LovelyInfoDialog(context) {
+                                @Override
+                                public LovelyInfoDialog setConfirmButtonText(String text) {
+                                    findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            dismiss();
+                                        }
+                                    });
+                                    return super.setConfirmButtonText(text);
+                                }
+                            }
+                                    .setTopColorRes(R.color.colorPrimary)
+                                    .setIcon(R.drawable.ic_pass_reset)
+                                    .setTitle("Password Recovery")
+                                    .setMessage("Sent email to " + email)
+                                    .setConfirmButtonText("Ok")
+                                    .show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            new LovelyInfoDialog(context) {
+                                @Override
+                                public LovelyInfoDialog setConfirmButtonText(String text) {
+                                    findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            dismiss();
+                                        }
+                                    });
+                                    return super.setConfirmButtonText(text);
+                                }
+                            }
+                                    .setTopColorRes(R.color.colorAccent)
+                                    .setIcon(R.drawable.ic_pass_reset)
+                                    .setTitle("False")
+                                    .setMessage("False to sent email to " + email)
+                                    .setConfirmButtonText("Ok")
+                                    .show();
+                        }
+                    });
+        }
+
+        @Override
+        public int getItemCount() {
+            return profileConfig.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            // each data item is just a string in this case
+            public TextView label, value;
+            public ImageView icon;
+            public ViewHolder(View view) {
+                super(view);
+                label = (TextView)view.findViewById(R.id.tv_title);
+                value = (TextView)view.findViewById(R.id.tv_detail);
+                icon = (ImageView)view.findViewById(R.id.img_icon);
+            }
+        }
+
+    }
+
+}
