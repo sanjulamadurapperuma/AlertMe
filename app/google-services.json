@@ -63,6 +63,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "745523677722-h9elneci3m35h35rsd7to0ji1otil9kd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.teamsos.android.alertme",
+            "certificate_hash": "12d9a791021ada4e6dd3702eab736d5defd26791"
+          }
+        },
+        {
           "client_id": "745523677722-3rqfg2s6fjjnhcgn1d4c39ulcqtl2t5s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

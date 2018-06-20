@@ -1,5 +1,7 @@
 package com.teamsos.android.alertme.chat.model;
 
+import com.teamsos.android.alertme.ui.map.Location;
+
 public class User {
     public String name;
     public String email;

@@ -81,12 +81,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Location loc= new Location();
-                loc.latitude = dataSnapshot.child("latitude").getValue(Double.class);
-                loc.longitude = dataSnapshot.child("longitude").getValue(Double.class);
-                LatLng device = new LatLng(loc.latitude,loc.longitude);
-                mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(device).title("Device Marker").icon(BitmapDescriptorFactory.fromResource(R.drawable.sos_icon)));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(device));
+                if(dataSnapshot.getValue()!=null){
+                    loc.latitude = dataSnapshot.child("latitude").getValue(Double.class);
+                    loc.longitude = dataSnapshot.child("longitude").getValue(Double.class);
+                    LatLng device = new LatLng(loc.latitude,loc.longitude);
+                    mMap.clear();
+                    mMap.addMarker(new MarkerOptions().position(device).title("Device Marker").icon(BitmapDescriptorFactory.fromResource(R.drawable.sos_icon)));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(device));
+                }
+
             }
 
             @Override
@@ -103,12 +106,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Location loc= new Location();
-                loc.latitude = dataSnapshot.child("latitude").getValue(Double.class);
-                loc.longitude = dataSnapshot.child("longitude").getValue(Double.class);
-                LatLng device = new LatLng(loc.latitude,loc.longitude);
-                mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(device).title("Device Marker").icon(BitmapDescriptorFactory.fromResource(R.drawable.sos_icon)));
-                updateMap();
+                if(dataSnapshot.getValue()!=null){
+                    loc.latitude = dataSnapshot.child("latitude").getValue(Double.class);
+                    loc.longitude = dataSnapshot.child("longitude").getValue(Double.class);
+                    LatLng device = new LatLng(loc.latitude,loc.longitude);
+                    mMap.clear();
+                    mMap.addMarker(new MarkerOptions().position(device).title("Device Marker").icon(BitmapDescriptorFactory.fromResource(R.drawable.sos_icon)));
+                    updateMap();
+                }
+
             }
 
             @Override
