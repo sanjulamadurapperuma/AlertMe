@@ -1,10 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.sanjula.android.pp02_cwk_02_v1.MainActivity">
+    tools:context=".MainActivity">
     <item
         android:id="@+id/about"
         android:orderInCategory="100"
         android:title="@string/about"
-        app:showAsAction="never" />
+        app:showAsAction="never"/>
 </menu>

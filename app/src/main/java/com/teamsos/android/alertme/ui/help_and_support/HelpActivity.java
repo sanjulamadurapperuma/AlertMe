@@ -18,12 +18,23 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.teamsos.android.alertme.BuildConfig;
 import com.teamsos.android.alertme.MainActivity;
 import com.teamsos.android.alertme.R;
@@ -33,8 +44,12 @@ import com.teamsos.android.alertme.chat.service.ServiceUtils;
 //import com.teamsos.android.alertme.ui.SettingsActivity;
 import com.teamsos.android.alertme.ui.map.MapsActivity;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.ArrayList;
+
+import javax.security.auth.callback.Callback;
 
 import static android.provider.Telephony.ThreadsColumns.ERROR;
 
@@ -187,7 +202,7 @@ public class HelpActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        NavigationView navigationView = findViewById(R.id.nav_barHelpAndSupport);
+        final NavigationView navigationView = findViewById(R.id.nav_barHelpAndSupport);
         navigationView.setNavigationItemSelectedListener(this);
         fAQButton = findViewById(R.id.faqText);//2
         fAQButton.setOnClickListener(new View.OnClickListener() {//3
@@ -230,8 +245,78 @@ public class HelpActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent);
             }
         });
-    }
+        isUser(new com.teamsos.android.alertme.ui.help_and_support.Callback() {//To check if the user is a device owner
+            @Override
+            public void onCallback(boolean value) {
+                if (value){
+                    isFriend(new com.teamsos.android.alertme.ui.help_and_support.Callback() {
+                        @Override
+                        public void onCallback(boolean value) {
+                            if (value){//To check if the user is a friend
+                                final String[] items = new String[2];
+                                items[0]="Owner";
+                                items[1]="Friend";
+                                View header=navigationView.getHeaderView(0);
+                                Spinner spinner = header.findViewById(R.id.Type);
+                                spinner.setAdapter(new ArrayAdapter<String>(HelpActivity.this,android.R.layout.simple_spinner_dropdown_item,items ));
+                                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                        Toast.makeText(HelpActivity.this,items[position],Toast.LENGTH_SHORT).show();
 
+                                    }
+
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> parent) {
+
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+    public void isUser(@NonNull final com.teamsos.android.alertme.ui.help_and_support.Callback callback){
+        final String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mDatabaseReference.child("user").child(currentUser).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    callback.onCallback(dataSnapshot.exists());
+                }
+                else {
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+    public void isFriend(@NonNull final com.teamsos.android.alertme.ui.help_and_support.Callback callback){
+        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mDatabaseReference.child("friend").child(currentUser).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    callback.onCallback(dataSnapshot.exists());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     @Override
     public void onBackPressed() {
         startActivity(new Intent(HelpActivity.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
