@@ -17,6 +17,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,6 +40,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private GoogleMap mMap;
+    Marker marker;
 
     private DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("location");
 
@@ -49,7 +51,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
         setTitle("View Friends");
         drawerLayout = findViewById(R.id.maps);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
@@ -86,7 +88,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     loc.longitude = dataSnapshot.child("longitude").getValue(Double.class);
                     LatLng device = new LatLng(loc.latitude,loc.longitude);
                     mMap.clear();
-                    mMap.addMarker(new MarkerOptions().position(device).title("Device Marker").icon(BitmapDescriptorFactory.fromResource(R.drawable.sos_icon)));
+                    marker = mMap.addMarker(new MarkerOptions().position(device).title("Device Marker").icon(BitmapDescriptorFactory.fromResource(R.drawable.sos_icon)));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(device));
                 }
 
@@ -110,8 +112,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     loc.latitude = dataSnapshot.child("latitude").getValue(Double.class);
                     loc.longitude = dataSnapshot.child("longitude").getValue(Double.class);
                     LatLng device = new LatLng(loc.latitude,loc.longitude);
-                    mMap.clear();
-                    mMap.addMarker(new MarkerOptions().position(device).title("Device Marker").icon(BitmapDescriptorFactory.fromResource(R.drawable.sos_icon)));
+                    marker.setPosition(device);
                     updateMap();
                 }
 
