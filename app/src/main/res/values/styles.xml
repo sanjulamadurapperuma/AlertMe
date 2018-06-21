@@ -1,67 +1,70 @@
 <resources>
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="actionOverflowButtonStyle">@style/MyOverflowButtonStyle</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
+
 
     <style name="ToolbarTheme" parent="Theme.AppCompat.Light.NoActionBar">
     <item name="android:textColorPrimary">@android:color/white</item>
     <item name="android:textColorSecondary">@android:color/white</item>
     </style>
-    <style name="CustomSpinnerTheme"
-        parent="Base.Widget.AppCompat.DropDownItem.Spinner">
-        <item name="android:textColor">#000000</item>
-        <item name="android:background">#ffffff</item>
-    </style>
-    <style name="AppTheme.NoActionBar">
-    <item name="windowActionBar">false</item>
-    <item name="windowNoTitle">true</item>
-    </style>
+    <!--<style name="CustomSpinnerTheme"-->
+        <!--parent="Base.Widget.AppCompat.DropDownItem.Spinner">-->
+        <!--<item name="android:textColor">#000000</item>-->
+        <!--<item name="android:background">#ffffff</item>-->
+    <!--</style>-->
+
 
 
     <style name="MyOverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
     <item name="android:tint">@color/white</item>
     </style>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#03A9F4</item>
+        <item name="colorPrimaryDark">#0288D1</item>
+        <item name="colorAccent">#4fa881</item>
+        <!-- set Can use Activity transitions -->
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="MyThemeNoActionbar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="EditTextTintTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimaryDark">#0288D1</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <!--Styles for chat feature-->
     <style name="TextLabel" parent="Theme.AppCompat.Light.NoActionBar">
-    <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
-    <item name="colorControlActivated">#009dff</item>
-    </style>
-
-    <style name="MyThemeNoActionbar" parent="AppTheme">
-    <item name="windowActionBar">false</item>
-    <item name="windowNoTitle">true</item>
-    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <item name="colorControlActivated">#009dff</item>
     </style>
 
     <style name="Translucent" parent="Theme.AppCompat.Light.NoActionBar">
-    <item name="windowNoTitle">true</item>
-    <item name="colorPrimary">#03A9F4</item>
-    <item name="colorPrimaryDark">#0073ff</item>
-    <item name="colorAccent">#4fa881</item>
-    <item name="android:windowBackground">@android:color/transparent</item>
-    <item name="android:windowIsTranslucent">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">#03A9F4</item>
+        <item name="colorPrimaryDark">#0073ff</item>
+        <item name="colorAccent">#4fa881</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <!--Required for the new Login Screen-->
     <style name="TranslucentBackground" parent="Theme.AppCompat.Light.NoActionBar">
-    <item name="windowNoTitle">true</item>
-    <item name="colorPrimary">#03A9F4</item>
-    <item name="colorPrimaryDark">#0073ff</item>
-    <item name="colorAccent">#4fa881</item>
-    <item name="android:windowBackground">@drawable/background_image_login</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">#03A9F4</item>
+        <item name="colorPrimaryDark">#0073ff</item>
+        <item name="colorAccent">#4fa881</item>
+        <item name="android:windowBackground">@drawable/background_image_login</item>
     </style>
-
-    <style name="EditTextTintTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-    <item name="colorPrimaryDark">#0288D1</item>
-    </style>
-    <!--End of style for chat feature-->
     </resources>
