@@ -7,8 +7,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -50,14 +51,16 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class SettingsActivity extends AppCompatActivity{
+
+public class SettingsActivity extends AppCompatActivity {
     TextView tvUserName;
     ImageView avatar;
 
     private List<Configuration> listConfig = new ArrayList<>();
     private RecyclerView recyclerView;
-    private SettingsActivity.UserInfoAdapter infoAdapter;
+    private UserInfoAdapter infoAdapter;
 
     private static final String USERNAME_LABEL = "Username";
     private static final String EMAIL_LABEL = "Email";
@@ -70,44 +73,15 @@ public class SettingsActivity extends AppCompatActivity{
     private DatabaseReference userDB;
     private FirebaseAuth mAuth;
     private User myAccount;
-    private Context context;
 
     public SettingsActivity() {
         // Required empty public constructor
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-        userDB = FirebaseDatabase.getInstance().getReference().child("user").child(StaticConfig.UID);
-        userDB.addListenerForSingleValueEvent(userListener);
-        mAuth = FirebaseAuth.getInstance();
-
-        avatar = (ImageView) findViewById(R.id.img_avatar);
-        avatar.setOnClickListener(onAvatarClick);
-        tvUserName = (TextView)findViewById(R.id.tv_username);
-
-        SharedPreferenceHelper prefHelper = SharedPreferenceHelper.getInstance(this);
-        myAccount = prefHelper.getUserInfo();
-        setupArrayListInfo(myAccount);
-        setImageAvatar(this, myAccount.avata);
-        tvUserName.setText(myAccount.name);
-
-        recyclerView = (RecyclerView)findViewById(R.id.info_recycler_view);
-        infoAdapter = new UserInfoAdapter(listConfig);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(infoAdapter);
-
-        waitingDialog = new LovelyProgressDialog(this);
-    }
-
     private ValueEventListener userListener = new ValueEventListener() {
         @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            //Get the user's information and update to the interface
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            //Lấy thông tin của user về và cập nhật lên giao diện
             listConfig.clear();
             myAccount = dataSnapshot.getValue(User.class);
 
@@ -123,55 +97,81 @@ public class SettingsActivity extends AppCompatActivity{
             setImageAvatar(SettingsActivity.this, myAccount.avata);
             SharedPreferenceHelper preferenceHelper = SharedPreferenceHelper.getInstance(SettingsActivity.this);
             preferenceHelper.saveUserInfo(myAccount);
-
         }
 
         @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-            //An error occured : not getting data
+        public void onCancelled(DatabaseError databaseError) {
+            //Có lỗi xảy ra, không lấy đc dữ liệu
             Log.e(SettingsActivity.class.getName(), "loadPost:onCancelled", databaseError.toException());
         }
     };
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        userDB = FirebaseDatabase.getInstance().getReference().child("user").child(StaticConfig.UID);
+        userDB.addListenerForSingleValueEvent(userListener);
+        mAuth = FirebaseAuth.getInstance();
+
+        avatar = (ImageView) findViewById(R.id.img_avatar);
+        avatar.setOnClickListener(onAvatarClick);
+        tvUserName = (TextView) findViewById(R.id.tv_username);
+
+        SharedPreferenceHelper prefHelper = SharedPreferenceHelper.getInstance(SettingsActivity.this);
+        myAccount = prefHelper.getUserInfo();
+        setupArrayListInfo(myAccount);
+        setImageAvatar(SettingsActivity.this, myAccount.avata);
+        tvUserName.setText(myAccount.name);
+
+        recyclerView = (RecyclerView) findViewById(R.id.info_recycler_view);
+        infoAdapter = new UserInfoAdapter(listConfig);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(infoAdapter);
+
+        waitingDialog = new LovelyProgressDialog(SettingsActivity.this);
+    }
+
     /**
-     * When you click on the avatar it opens the default viewer to select an image
+     * Khi click vào avatar thì bắn intent mở trình xem ảnh mặc định để chọn ảnh
      */
-    private View.OnClickListener onAvatarClick = new View.OnClickListener(){
+    private View.OnClickListener onAvatarClick = new View.OnClickListener() {
         @Override
-        public void onClick(View view){
+        public void onClick(View view) {
 
             new AlertDialog.Builder(SettingsActivity.this)
                     .setTitle("Avatar")
-                    .setMessage("Are you sure you want to change your avatar profile?")
+                    .setMessage("Are you sure want to change avatar profile?")
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        public void onClick(DialogInterface dialogInterface, int i) {
                             Intent intent = new Intent();
                             intent.setType("image/*");
                             intent.setAction(Intent.ACTION_PICK);
                             startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
-                            dialog.dismiss();
+                            dialogInterface.dismiss();
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
                         }
                     }).show();
         }
     };
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK){
-            if(data == null){
+        if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK) {
+            if (data == null) {
                 Toast.makeText(this, "An error occured, please try again", Toast.LENGTH_LONG).show();
                 return;
             }
-            try{
-                InputStream inputStream = this.getContentResolver().openInputStream(data.getData());
+            try {
+                InputStream inputStream = this.getContentResolver().openInputStream(Objects.requireNonNull(data.getData()));
 
                 Bitmap imgBitmap = BitmapFactory.decodeStream(inputStream);
                 imgBitmap = ImageUtils.cropToSquare(imgBitmap);
@@ -184,7 +184,7 @@ public class SettingsActivity extends AppCompatActivity{
                 myAccount.avata = imageBase64;
 
                 waitingDialog.setCancelable(false)
-                        .setTitle("Avatar updating...")
+                        .setTitle("Avatar updating....")
                         .setTopColorRes(R.color.colorPrimary)
                         .show();
 
@@ -195,11 +195,9 @@ public class SettingsActivity extends AppCompatActivity{
                                 if(task.isSuccessful()){
 
                                     waitingDialog.dismiss();
-                                    SharedPreferenceHelper preferenceHelper = SharedPreferenceHelper
-                                            .getInstance(SettingsActivity.this);
+                                    SharedPreferenceHelper preferenceHelper = SharedPreferenceHelper.getInstance(SettingsActivity.this);
                                     preferenceHelper.saveUserInfo(myAccount);
-                                    avatar.setImageDrawable(ImageUtils
-                                            .roundedImage(SettingsActivity.this, liteImage));
+                                    avatar.setImageDrawable(ImageUtils.roundedImage(SettingsActivity.this, liteImage));
 
                                     new LovelyInfoDialog(SettingsActivity.this)
                                             .setTopColorRes(R.color.colorPrimary)
@@ -213,7 +211,7 @@ public class SettingsActivity extends AppCompatActivity{
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 waitingDialog.dismiss();
-                                Log.d("Update avatar", "failed");
+                                Log.d("Update Avatar", "failed");
                                 new LovelyInfoDialog(SettingsActivity.this)
                                         .setTopColorRes(R.color.colorAccent)
                                         .setTitle("False")
@@ -221,7 +219,6 @@ public class SettingsActivity extends AppCompatActivity{
                                         .show();
                             }
                         });
-
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -259,7 +256,7 @@ public class SettingsActivity extends AppCompatActivity{
                 src = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             }
 
-            avatar.setImageDrawable(ImageUtils.roundedImage(context, src));
+            avatar.setImageDrawable(ImageUtils.roundedImage(SettingsActivity.this, src));
         }catch (Exception e){
         }
     }
@@ -269,21 +266,14 @@ public class SettingsActivity extends AppCompatActivity{
         super.onDestroy();
     }
 
-    public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHolder> {
+    public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHolder>{
         private List<Configuration> profileConfig;
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
-
-
-            public ViewHolder(View view) {
-                super(view);
-            }
-        }
-
-        public UserInfoAdapter(List<Configuration> profileConfig) {
+        public UserInfoAdapter(List<Configuration> profileConfig){
             this.profileConfig = profileConfig;
         }
 
+        @NonNull
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
@@ -292,14 +282,153 @@ public class SettingsActivity extends AppCompatActivity{
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            final Configuration config = profileConfig.get(position);
+            holder.label.setText(config.getLabel());
+            holder.value.setText(config.getValue());
+            holder.icon.setImageResource(config.getIcon());
+            ((RelativeLayout)holder.label.getParent()).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(config.getLabel().equals(SIGNOUT_LABEL)){
+                        FirebaseAuth.getInstance().signOut();
+                        FriendDB.getInstance(getApplicationContext()).dropDB();
+                        GroupDB.getInstance(getApplicationContext()).dropDB();
+                        ServiceUtils.stopServiceFriendChat(getApplicationContext().getApplicationContext(), true);
+                        finish();
+                    }
 
+                    if(config.getLabel().equals(USERNAME_LABEL)){
+                        View vewInflater = LayoutInflater.from(SettingsActivity.this)
+                                .inflate(R.layout.dialog_edit_username, null);
+                        final EditText input = (EditText)vewInflater.findViewById(R.id.edit_username);
+                        input.setText(myAccount.name);
+                        /*Hiển thị dialog với dEitText cho phép người dùng nhập username mới*/
+                        new AlertDialog.Builder(SettingsActivity.this)
+                                .setTitle("Edit username")
+                                .setView(vewInflater)
+                                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        String newName = input.getText().toString();
+                                        if(!myAccount.name.equals(newName)){
+                                            changeUserName(newName);
+                                        }
+                                        dialogInterface.dismiss();
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                }).show();
+                    }
+
+                    if(config.getLabel().equals(RESETPASS_LABEL)){
+                        new AlertDialog.Builder(SettingsActivity.this)
+                                .setTitle("Password")
+                                .setMessage("Are you sure want to reset password?")
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        resetPassword(myAccount.email);
+                                        dialogInterface.dismiss();
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                }).show();
+                    }
+                }
+            });
+        }
+
+        /**
+         * Cập nhật username mới vào SharedPreference và thay đổi trên giao diện
+         */
+        private void changeUserName(String newName){
+            userDB.child("name").setValue(newName);
+
+
+            myAccount.name = newName;
+            SharedPreferenceHelper prefHelper = SharedPreferenceHelper.getInstance(SettingsActivity.this);
+            prefHelper.saveUserInfo(myAccount);
+
+            tvUserName.setText(newName);
+            setupArrayListInfo(myAccount);
+        }
+
+        void resetPassword(final String email) {
+            mAuth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            new LovelyInfoDialog(SettingsActivity.this) {
+                                @Override
+                                public LovelyInfoDialog setConfirmButtonText(String text) {
+                                    findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            dismiss();
+                                        }
+                                    });
+                                    return super.setConfirmButtonText(text);
+                                }
+                            }
+                                    .setTopColorRes(R.color.colorPrimary)
+                                    .setIcon(R.drawable.ic_pass_reset)
+                                    .setTitle("Password Recovery")
+                                    .setMessage("Sent email to " + email)
+                                    .setConfirmButtonText("Ok")
+                                    .show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            new LovelyInfoDialog(SettingsActivity.this) {
+                                @Override
+                                public LovelyInfoDialog setConfirmButtonText(String text) {
+                                    findView(com.yarolegovich.lovelydialog.R.id.ld_btn_confirm).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            dismiss();
+                                        }
+                                    });
+                                    return super.setConfirmButtonText(text);
+                                }
+                            }
+                                    .setTopColorRes(R.color.colorAccent)
+                                    .setIcon(R.drawable.ic_pass_reset)
+                                    .setTitle("False")
+                                    .setMessage("False to sent email to " + email)
+                                    .setConfirmButtonText("Ok")
+                                    .show();
+                        }
+                    });
         }
 
         @Override
         public int getItemCount() {
-            return 3;
+            return profileConfig.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            // each data item is just a string in this case
+            public TextView label, value;
+            public ImageView icon;
+            public ViewHolder(View view) {
+                super(view);
+                label = (TextView)view.findViewById(R.id.tv_title);
+                value = (TextView)view.findViewById(R.id.tv_detail);
+                icon = (ImageView)view.findViewById(R.id.img_icon);
+            }
         }
 
     }
+
 }
