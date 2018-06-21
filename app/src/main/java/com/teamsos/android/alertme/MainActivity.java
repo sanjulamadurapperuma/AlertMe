@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TabLayout tabLayout = null;//Horizontal layout for tabs
     public static String STR_FRIEND_FRAGMENT = "FRIEND";//Name of first tab
     public static String STR_GROUP_FRAGMENT = "GROUP";//Name of second tab
-    public static String STR_INFO_FRAGMENT = "INFO";//Name of third tab
+//    public static String STR_INFO_FRAGMENT = "INFO";//Name of third tab
 
     private FloatingActionButton floatButton;//Float button in bottom-right
     private ViewPagerAdapter adapter;//Managing page views
@@ -177,19 +177,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int[] tabIcons = {
                 R.drawable.ic_tab_person,
                 R.drawable.ic_tab_group,
-                R.drawable.ic_tab_infor
+//                R.drawable.ic_tab_infor
         };
 
         Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(tabIcons[0]);
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(tabIcons[1]);
-        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(tabIcons[2]);
+//        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(tabIcons[2]);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new FriendsFragment(), STR_FRIEND_FRAGMENT);
         adapter.addFrag(new GroupFragment(), STR_GROUP_FRAGMENT);
-        adapter.addFrag(new UserProfileFragment(), STR_INFO_FRAGMENT);
+//        adapter.addFrag(new UserProfileFragment(), STR_INFO_FRAGMENT);
         floatButton.setOnClickListener(((FriendsFragment) adapter.getItem(0))
                 .onClickFloatButton.getInstance(this));
         viewPager.setAdapter(adapter);
