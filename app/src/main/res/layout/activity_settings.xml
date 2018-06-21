@@ -17,7 +17,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/img_avatar"
+                android:id="@id/img_avatar"
                 android:layout_gravity="center"
                 android:layout_width="104dp"
                 android:layout_height="104dp"
