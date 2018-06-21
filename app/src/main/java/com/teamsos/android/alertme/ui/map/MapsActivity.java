@@ -10,11 +10,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -36,7 +31,6 @@ import com.teamsos.android.alertme.chat.data.FriendDB;
 import com.teamsos.android.alertme.chat.data.GroupDB;
 import com.teamsos.android.alertme.chat.service.ServiceUtils;
 //import com.teamsos.android.alertme.ui.SettingsActivity;
-import com.teamsos.android.alertme.ui.help_and_support.Callback;
 import com.teamsos.android.alertme.ui.help_and_support.HelpActivity;
 
 import java.util.Objects;
@@ -64,45 +58,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        final NavigationView navigationView = findViewById(R.id.nav_barMap);
+        NavigationView navigationView = findViewById(R.id.nav_barMap);
         navigationView.setNavigationItemSelectedListener(this);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        new HelpActivity().isUser(new Callback() {
-            @Override
-            public void onCallback(boolean value) {
-                if (value){
-                    new HelpActivity().isFriend(new com.teamsos.android.alertme.ui.help_and_support.Callback() {
-                        @Override
-                        public void onCallback(boolean value) {
-                            if (value){//To check if the user is a friend
-                                final String[] items = new String[2];
-                                items[0]="Owner";
-                                items[1]="Friend";
-                                View header=navigationView.getHeaderView(0);
-                                Spinner spinner = header.findViewById(R.id.Type);
-                                spinner.setAdapter(new ArrayAdapter<String>(MapsActivity.this,android.R.layout.simple_spinner_dropdown_item,items ));
-                                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                    @Override
-                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                        Toast.makeText(MapsActivity.this,items[position],Toast.LENGTH_SHORT).show();
-
-                                    }
-
-                                    @Override
-                                    public void onNothingSelected(AdapterView<?> parent) {
-
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }
-            }
-
-        });
     }
 
 

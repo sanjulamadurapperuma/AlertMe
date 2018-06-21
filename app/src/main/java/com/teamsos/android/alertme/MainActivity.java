@@ -19,9 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,7 +30,6 @@ import com.teamsos.android.alertme.chat.ui.GroupFragment;
 import com.teamsos.android.alertme.chat.ui.LoginActivity;
 import com.teamsos.android.alertme.chat.ui.UserProfileFragment;
 import com.teamsos.android.alertme.ui.SettingsActivity;
-import com.teamsos.android.alertme.ui.help_and_support.Callback;
 import com.teamsos.android.alertme.ui.help_and_support.HelpActivity;
 import com.teamsos.android.alertme.ui.map.MapsActivity;
 
@@ -49,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TabLayout tabLayout = null;//Horizontal layout for tabs
     public static String STR_FRIEND_FRAGMENT = "FRIEND";//Name of first tab
     public static String STR_GROUP_FRAGMENT = "GROUP";//Name of second tab
-    public static String STR_INFO_FRAGMENT = "INFO";//Name of third tab
+//    public static String STR_INFO_FRAGMENT = "INFO";//Name of third tab
 
     private FloatingActionButton floatButton;//Float button in bottom-right
     private ViewPagerAdapter adapter;//Managing page views
@@ -68,49 +64,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = findViewById(R.id.toolbar);
         setTitle("AlertMe");
         setSupportActionBar(toolbar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         drawerLayout = findViewById(R.id.main_drawer);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        final NavigationView navigationView = findViewById(R.id.nav_barMain);
+        NavigationView navigationView = findViewById(R.id.nav_barMain);
         navigationView.setNavigationItemSelectedListener(this);
         viewPager = findViewById(R.id.viewpager);
         floatButton = findViewById(R.id.fab);
-        new HelpActivity().isUser(new Callback() {
-            @Override
-            public void onCallback(boolean value) {
-                if (value){
-                    new HelpActivity().isFriend(new com.teamsos.android.alertme.ui.help_and_support.Callback() {
-                        @Override
-                        public void onCallback(boolean value) {
-                            if (value){//To check if the user is a friend
-                                final String[] items = new String[2];
-                                items[0]="Owner";
-                                items[1]="Friend";
-                                View header=navigationView.getHeaderView(0);
-                                Spinner spinner = header.findViewById(R.id.Type);
-                                spinner.setAdapter(new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_spinner_dropdown_item,items ));
-                                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                    @Override
-                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                        Toast.makeText(MainActivity.this,items[position],Toast.LENGTH_SHORT).show();
-
-                                    }
-
-                                    @Override
-                                    public void onNothingSelected(AdapterView<?> parent) {
-
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }
-            }
-
-        });
         initTab();
         initFirebase();
     }
@@ -177,14 +139,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(tabIcons[0]);
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(tabIcons[1]);
-        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(tabIcons[2]);
+//        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(tabIcons[2]);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new FriendsFragment(), STR_FRIEND_FRAGMENT);
         adapter.addFrag(new GroupFragment(), STR_GROUP_FRAGMENT);
-        adapter.addFrag(new UserProfileFragment(), STR_INFO_FRAGMENT);
+//        adapter.addFrag(new UserProfileFragment(), STR_INFO_FRAGMENT);
         floatButton.setOnClickListener(((FriendsFragment) adapter.getItem(0))
                 .onClickFloatButton.getInstance(this));
         viewPager.setAdapter(adapter);
@@ -228,8 +190,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
