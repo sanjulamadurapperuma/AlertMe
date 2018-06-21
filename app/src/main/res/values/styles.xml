@@ -12,7 +12,11 @@
     <item name="android:textColorPrimary">@android:color/white</item>
     <item name="android:textColorSecondary">@android:color/white</item>
     </style>
-
+    <style name="CustomSpinnerTheme"
+        parent="Base.Widget.AppCompat.DropDownItem.Spinner">
+        <item name="android:textColor">#000000</item>
+        <item name="android:background">#ffffff</item>
+    </style>
     <style name="AppTheme.NoActionBar">
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
