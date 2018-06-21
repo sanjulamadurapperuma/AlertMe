@@ -19,10 +19,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.teamsos.android.alertme.chat.data.FriendDB;
+import com.teamsos.android.alertme.chat.data.GroupDB;
 import com.teamsos.android.alertme.chat.data.StaticConfig;
 import com.teamsos.android.alertme.chat.service.ServiceUtils;
 import com.teamsos.android.alertme.chat.ui.FriendsFragment;
@@ -69,10 +74,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        NavigationView navigationView = findViewById(R.id.nav_barMain);
+        final NavigationView navigationView = findViewById(R.id.nav_barMain);
         navigationView.setNavigationItemSelectedListener(this);
         viewPager = findViewById(R.id.viewpager);
         floatButton = findViewById(R.id.fab);
+        View header=navigationView.getHeaderView(0);
+        final Spinner spinner = header.findViewById(R.id.Type);
+        spinner.setVisibility(View.GONE);
+       new HelpActivity().isUser(new com.teamsos.android.alertme.ui.help_and_support.Callback() {//To check if the user is a device owner
+            @Override
+            public void onCallback(boolean value) {
+                if (value){
+                    new HelpActivity().isFriend(new com.teamsos.android.alertme.ui.help_and_support.Callback() {
+                        @Override
+                        public void onCallback(boolean value) {
+                            if (value){//To check if the user is a friend
+                                spinner.setVisibility(View.VISIBLE);
+                                final String[] items = new String[2];
+                                items[0]="Owner";
+                                items[1]="Friend";
+                                View header=navigationView.getHeaderView(0);
+                                Spinner spinner = header.findViewById(R.id.Type);
+                                spinner.setAdapter(new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_spinner_dropdown_item,items ));
+                                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                        Toast.makeText(MainActivity.this,items[position],Toast.LENGTH_SHORT).show();
+
+                                    }
+
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> parent) {
+
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        });
         initTab();
         initFirebase();
     }
@@ -213,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        NavigationView navigationView = findViewById(R.id.nav_barMain);
+       NavigationView navigationView = findViewById(R.id.nav_barMain);
        navigationView.setNavigationItemSelectedListener(this);
        int id = item.getItemId();
        if (id == R.id.nav_chat) {
@@ -237,7 +278,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
            overridePendingTransition(0, 0);
            help.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
            startActivity(help);
-       } /**/
+       } else if (id == R.id.nav_logout) {
+           try {
+               mAuth.signOut();
+           } catch (Exception e) {
+               e.printStackTrace();
+           }
+       }
         drawerLayout = findViewById(R.id.main_drawer);
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;

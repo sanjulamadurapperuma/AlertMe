@@ -8,16 +8,22 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -35,6 +41,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.teamsos.android.alertme.MainActivity;
 import com.teamsos.android.alertme.R;
 import com.teamsos.android.alertme.chat.data.FriendDB;
 import com.teamsos.android.alertme.chat.data.GroupDB;
@@ -44,6 +51,8 @@ import com.teamsos.android.alertme.chat.model.Configuration;
 import com.teamsos.android.alertme.chat.model.User;
 import com.teamsos.android.alertme.chat.service.ServiceUtils;
 import com.teamsos.android.alertme.chat.util.ImageUtils;
+import com.teamsos.android.alertme.ui.help_and_support.HelpActivity;
+import com.teamsos.android.alertme.ui.map.MapsActivity;
 import com.yarolegovich.lovelydialog.LovelyInfoDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
 
@@ -54,7 +63,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     TextView tvUserName;
     ImageView avatar;
 
@@ -69,7 +78,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE = 1994;
     private LovelyProgressDialog waitingDialog;
-
+    DrawerLayout drawerLayout;
+    ActionBarDrawerToggle drawerToggle;
     private DatabaseReference userDB;
     private FirebaseAuth mAuth;
     private User myAccount;
@@ -113,7 +123,16 @@ public class SettingsActivity extends AppCompatActivity {
         userDB = FirebaseDatabase.getInstance().getReference().child("user").child(StaticConfig.UID);
         userDB.addListenerForSingleValueEvent(userListener);
         mAuth = FirebaseAuth.getInstance();
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setTitle("AlertMe");
+        setSupportActionBar(toolbar);
+        drawerLayout = findViewById(R.id.settings_drawer);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        final NavigationView navigationView = findViewById(R.id.nav_barSettings);
+        navigationView.setNavigationItemSelectedListener(this);
         avatar = (ImageView) findViewById(R.id.img_avatar);
         avatar.setOnClickListener(onAvatarClick);
         tvUserName = (TextView) findViewById(R.id.tv_username);
@@ -226,6 +245,11 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    }
+
     /**
      * Delete the old list and update the new list data
      * @param myAccount
@@ -265,6 +289,44 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void onDestroy (){
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        NavigationView navigationView = findViewById(R.id.nav_barSettings);
+        navigationView.setNavigationItemSelectedListener(this);
+        int id = item.getItemId();
+        if (id == R.id.nav_chat) {
+            Intent chat = new Intent(SettingsActivity.this, MainActivity.class);
+            overridePendingTransition(0, 0);
+            chat.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(chat);
+
+        } else if (id == R.id.nav_map) {
+            Intent map = new Intent(SettingsActivity.this, MapsActivity.class);
+            map.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            overridePendingTransition(0, 0);
+            startActivity(map);
+        } else if (id == R.id.nav_settings) {
+            Intent settings = new Intent(SettingsActivity.this, SettingsActivity.class);
+            overridePendingTransition(0, 0);
+            settings.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(settings);
+        } else if (id == R.id.nav_help) {
+            Intent help = new Intent(SettingsActivity.this, HelpActivity.class);
+            overridePendingTransition(0, 0);
+            help.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(help);
+        } else if (id == R.id.nav_logout) {
+            try {
+                mAuth.signOut();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        DrawerLayout drawerLayout = findViewById(R.id.settings_drawer);
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHolder>{
@@ -362,6 +424,7 @@ public class SettingsActivity extends AppCompatActivity {
             tvUserName.setText(newName);
             setupArrayListInfo(myAccount);
         }
+
 
         void resetPassword(final String email) {
             mAuth.sendPasswordResetEmail(email)
