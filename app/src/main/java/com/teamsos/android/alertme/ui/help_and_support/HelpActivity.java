@@ -49,6 +49,7 @@ import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.security.auth.callback.Callback;
 
@@ -202,8 +203,8 @@ public class HelpActivity extends AppCompatActivity implements NavigationView.On
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        final NavigationView navigationView = findViewById(R.id.nav_barHelpAndSupport);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        NavigationView navigationView = findViewById(R.id.nav_barHelpAndSupport);
         navigationView.setNavigationItemSelectedListener(this);
         fAQButton = findViewById(R.id.faqText);//2
         fAQButton.setOnClickListener(new View.OnClickListener() {//3
