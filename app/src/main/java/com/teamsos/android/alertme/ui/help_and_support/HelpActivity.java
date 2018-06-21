@@ -288,7 +288,8 @@ public class HelpActivity extends AppCompatActivity implements NavigationView.On
                 if (dataSnapshot.exists()){
                     callback.onCallback(dataSnapshot.exists());
                 }
-
+                else {
+                }
             }
 
             @Override
