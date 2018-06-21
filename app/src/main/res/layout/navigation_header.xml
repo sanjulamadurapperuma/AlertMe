@@ -28,7 +28,7 @@
         android:dropDownWidth="match_parent"
         android:spinnerMode="dropdown"
         android:textAlignment="viewEnd"
-        android:textColor="#FFFF"
+        android:textColor="@color/white"
         android:textSize="24sp" />
 
 </RelativeLayout>

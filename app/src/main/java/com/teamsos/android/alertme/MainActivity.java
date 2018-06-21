@@ -1,8 +1,6 @@
 package com.teamsos.android.alertme;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                     @Override
                                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                        Toast.makeText(MainActivity.this,items[position]+String.valueOf(position),Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this,items[position],Toast.LENGTH_SHORT).show();
 
                                     }
 
@@ -253,7 +251,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    @TargetApi(Build.VERSION_CODES.ECLAIR)
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         NavigationView navigationView = findViewById(R.id.nav_barMain);
@@ -281,13 +278,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
            help.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
            startActivity(help);
        } /**/
-        else if (id==R.id.nav_logout){
-           try {
-               mAuth.signOut();
-           } catch (Exception e) {
-               e.printStackTrace();
-           }
-       }
         drawerLayout = findViewById(R.id.main_drawer);
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
