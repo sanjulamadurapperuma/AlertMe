@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int[] tabIcons = {
                 R.drawable.ic_tab_person,
                 R.drawable.ic_tab_group,
-                R.drawable.ic_tab_infor
+//                R.drawable.ic_tab_infor
         };
 
         Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(tabIcons[0]);
