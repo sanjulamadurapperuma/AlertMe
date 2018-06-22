@@ -19,7 +19,6 @@
             android:focusableInTouchMode="true"
             android:theme="@style/AppTheme.AppBarOverlay">
         </android.support.design.widget.AppBarLayout>
-        <include layout="@layout/toolbar_layout"/>
 
         <TextView
             android:id="@+id/faqText"
