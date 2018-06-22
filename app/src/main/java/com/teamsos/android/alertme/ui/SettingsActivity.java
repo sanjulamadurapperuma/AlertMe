@@ -26,9 +26,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +58,8 @@ import com.teamsos.android.alertme.ui.help_and_support.HelpActivity;
 import com.teamsos.android.alertme.ui.map.MapsActivity;
 import com.yarolegovich.lovelydialog.LovelyInfoDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
+
+import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -129,8 +134,42 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        final NavigationView navigationView = findViewById(R.id.nav_barSettings);
+        NavigationView navigationView = findViewById(R.id.nav_barSettings);
         navigationView.setNavigationItemSelectedListener(this);
+        View header=navigationView.getHeaderView(0);
+        final Spinner spinner = header.findViewById(R.id.Type);
+        spinner.setVisibility(View.GONE);
+        new HelpActivity().isUser(new com.teamsos.android.alertme.ui.help_and_support.Callback() {//To check if the user is a device owner
+            @Override
+            public void onCallback(boolean value) {
+                if (value){
+                    new HelpActivity().isFriend(new com.teamsos.android.alertme.ui.help_and_support.Callback() {
+                        @Override
+                        public void onCallback(boolean value) {
+                            if (value){//To check if the user is a friend
+                                final String[] items = new String[2];
+                                items[0]="Owner";
+                                items[1]="Friend";
+                                spinner.setVisibility(View.VISIBLE);
+                                spinner.setAdapter(new ArrayAdapter<String>(SettingsActivity.this,android.R.layout.simple_spinner_dropdown_item,items ));
+                                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                        Toast.makeText(SettingsActivity.this,items[position],Toast.LENGTH_SHORT).show();
+
+                                    }
+
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> parent) {
+
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        });
         avatar = (ImageView) findViewById(R.id.img_avatar);
         avatar.setOnClickListener(onAvatarClick);
         tvUserName = (TextView) findViewById(R.id.tv_username);
