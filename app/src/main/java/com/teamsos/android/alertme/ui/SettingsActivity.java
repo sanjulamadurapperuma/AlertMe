@@ -123,9 +123,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
         userDB = FirebaseDatabase.getInstance().getReference().child("user").child(StaticConfig.UID);
         userDB.addListenerForSingleValueEvent(userListener);
         mAuth = FirebaseAuth.getInstance();
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setTitle("AlertMe");
-        setSupportActionBar(toolbar);
+        setTitle("Settings");
         drawerLayout = findViewById(R.id.settings_drawer);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(drawerToggle);

@@ -50,8 +50,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         setTitle("View Friends");
         drawerLayout = findViewById(R.id.maps);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);

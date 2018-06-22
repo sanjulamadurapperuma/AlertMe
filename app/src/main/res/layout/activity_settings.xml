@@ -20,7 +20,6 @@
             android:focusableInTouchMode="true"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-        <include layout="@layout/toolbar_layout"/>
         </android.support.design.widget.AppBarLayout>
 
         <RelativeLayout
