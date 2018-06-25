@@ -1,6 +1,7 @@
 package com.teamsos.android.alertme.ui.map;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -9,6 +10,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,22 +28,19 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.teamsos.android.alertme.Account_Switch.Callback;
+import com.teamsos.android.alertme.Account_Switch.CheckUser;
+import com.teamsos.android.alertme.BuildConfig;
 import com.teamsos.android.alertme.MainActivity;
 import com.teamsos.android.alertme.R;
-import com.teamsos.android.alertme.chat.data.FriendDB;
-import com.teamsos.android.alertme.chat.data.GroupDB;
-import com.teamsos.android.alertme.chat.service.ServiceUtils;
 //import com.teamsos.android.alertme.ui.SettingsActivity;
 import com.teamsos.android.alertme.ui.SettingsActivity;
 import com.teamsos.android.alertme.ui.help_and_support.HelpActivity;
-
-import java.util.Objects;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener {
     private Toolbar toolbar;
@@ -56,13 +57,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setTitle("View Friends");
+        setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.maps);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         NavigationView navigationView = findViewById(R.id.nav_barMap);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         navigationView.setNavigationItemSelectedListener(this);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -71,11 +74,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         View header=navigationView.getHeaderView(0);
         final Spinner spinner = header.findViewById(R.id.Type);
         spinner.setVisibility(View.GONE);
-        new HelpActivity().isUser(new com.teamsos.android.alertme.ui.help_and_support.Callback() {//To check if the user is a device owner
+        new CheckUser().isUser(new Callback() {//To check if the user is a device owner
             @Override
             public void onCallback(boolean value) {
                 if (value){
-                    new HelpActivity().isFriend(new com.teamsos.android.alertme.ui.help_and_support.Callback() {
+                    new CheckUser().isFriend(new Callback() {
                         @Override
                         public void onCallback(boolean value) {
                             if (value){//To check if the user is a friend
@@ -141,6 +144,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
         updateMap();
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        for(int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
+            spanString.setSpan(new ForegroundColorSpan(Color.BLACK), 0,     spanString.length(), 0);
+            item.setTitle(spanString);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        //This is for the About menu item in the top-right hand corner
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.about) {
+            Toast.makeText(this, "AlertMe version "+ BuildConfig.VERSION_NAME, Toast.LENGTH_LONG).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     public void updateMap(){
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -172,12 +208,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         startActivity(new Intent(MapsActivity.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
         finish();
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
 
-        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
-
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -205,12 +236,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             help.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(help);
         } else if (id == R.id.nav_logout) {
-            FirebaseAuth.getInstance().signOut();
-            FriendDB.getInstance(this).dropDB();
-            GroupDB.getInstance(this).dropDB();
-            ServiceUtils.stopServiceFriendChat(this.getApplicationContext(), true);
-            overridePendingTransition(0, 0);
-            finish();
+            try {
+                new MainActivity().mAuth.signOut();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         DrawerLayout drawerLayout = findViewById(R.id.maps);

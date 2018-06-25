@@ -2,8 +2,6 @@
 
 
     <style name="ToolbarTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
     <item name="android:textColorPrimary">@android:color/white</item>
     <item name="android:textColorSecondary">@android:color/white</item>
     </style>
@@ -25,6 +23,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#03A9F4</item>
         <item name="colorPrimaryDark">#0288D1</item>
+
         <item name="colorAccent">#4fa881</item>
         <!-- set Can use Activity transitions -->
         <item name="android:windowContentTransitions">true</item>

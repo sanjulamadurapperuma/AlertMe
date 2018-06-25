@@ -50,15 +50,18 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".ui.map.MapsActivity" />
-        <activity android:name=".ui.help_and_support.HelpActivity" />
+        <activity android:name=".ui.map.MapsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.help_and_support.HelpActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <service
             android:name=".chat.service.FriendChatService"
             android:exported="false"
             android:persistent="true" />
 
-        <activity android:name=".ui.SettingsActivity"/>
+        <activity android:name=".ui.SettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

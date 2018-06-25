@@ -1,6 +1,7 @@
 package com.teamsos.android.alertme;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +16,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,14 +29,13 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.teamsos.android.alertme.chat.data.FriendDB;
-import com.teamsos.android.alertme.chat.data.GroupDB;
+import com.teamsos.android.alertme.Account_Switch.Callback;
+import com.teamsos.android.alertme.Account_Switch.CheckUser;
 import com.teamsos.android.alertme.chat.data.StaticConfig;
 import com.teamsos.android.alertme.chat.service.ServiceUtils;
 import com.teamsos.android.alertme.chat.ui.FriendsFragment;
 import com.teamsos.android.alertme.chat.ui.GroupFragment;
 import com.teamsos.android.alertme.chat.ui.LoginActivity;
-import com.teamsos.android.alertme.chat.ui.UserProfileFragment;
 import com.teamsos.android.alertme.ui.SettingsActivity;
 import com.teamsos.android.alertme.ui.help_and_support.HelpActivity;
 import com.teamsos.android.alertme.ui.map.MapsActivity;
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FloatingActionButton floatButton;//Float button in bottom-right
     private ViewPagerAdapter adapter;//Managing page views
 
-    private FirebaseAuth mAuth;//extends object implements internalTokenProvider
+    public FirebaseAuth mAuth;//extends object implements internalTokenProvider
     private FirebaseAuth.AuthStateListener mAuthListener;//Listener for change in authentication states
     private FirebaseUser user;//User of current instance
     DrawerLayout drawerLayout;
@@ -80,11 +82,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View header=navigationView.getHeaderView(0);
         final Spinner spinner = header.findViewById(R.id.Type);
         spinner.setVisibility(View.GONE);
-       new HelpActivity().isUser(new com.teamsos.android.alertme.ui.help_and_support.Callback() {//To check if the user is a device owner
+        new CheckUser().isUser(new Callback() {//To check if the user is a device owner
             @Override
             public void onCallback(boolean value) {
                 if (value){
-                    new HelpActivity().isFriend(new com.teamsos.android.alertme.ui.help_and_support.Callback() {
+                    new CheckUser().isFriend(new Callback() {
                         @Override
                         public void onCallback(boolean value) {
                             if (value){//To check if the user is a friend
@@ -224,7 +226,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        for(int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
+            spanString.setSpan(new ForegroundColorSpan(Color.BLACK), 0,     spanString.length(), 0);
+            item.setTitle(spanString);
+        }
         return true;
     }
 
@@ -241,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //This is for the About menu item in the top-right hand corner
         //noinspection SimplifiableIfStatement
         if (id == R.id.about) {
-            Toast.makeText(this, "AlertMe version 1.0", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "AlertMe version "+BuildConfig.VERSION_NAME, Toast.LENGTH_LONG).show();
             return true;
         }
 

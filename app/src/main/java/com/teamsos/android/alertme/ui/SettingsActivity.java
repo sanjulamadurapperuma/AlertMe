@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,9 +20,12 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +47,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.teamsos.android.alertme.Account_Switch.Callback;
+import com.teamsos.android.alertme.Account_Switch.CheckUser;
+import com.teamsos.android.alertme.BuildConfig;
 import com.teamsos.android.alertme.MainActivity;
 import com.teamsos.android.alertme.R;
 import com.teamsos.android.alertme.chat.data.FriendDB;
@@ -58,8 +64,6 @@ import com.teamsos.android.alertme.ui.help_and_support.HelpActivity;
 import com.teamsos.android.alertme.ui.map.MapsActivity;
 import com.yarolegovich.lovelydialog.LovelyInfoDialog;
 import com.yarolegovich.lovelydialog.LovelyProgressDialog;
-
-import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -125,6 +129,8 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         userDB = FirebaseDatabase.getInstance().getReference().child("user").child(StaticConfig.UID);
         userDB.addListenerForSingleValueEvent(userListener);
         mAuth = FirebaseAuth.getInstance();
@@ -133,17 +139,19 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         NavigationView navigationView = findViewById(R.id.nav_barSettings);
         navigationView.setNavigationItemSelectedListener(this);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         View header=navigationView.getHeaderView(0);
+        TextView navBarTitle = header.findViewById(R.id.Name);
+        navBarTitle.setVisibility(View.VISIBLE);
         final Spinner spinner = header.findViewById(R.id.Type);
         spinner.setVisibility(View.GONE);
-        new HelpActivity().isUser(new com.teamsos.android.alertme.ui.help_and_support.Callback() {//To check if the user is a device owner
+        new CheckUser().isUser(new Callback() {//To check if the user is a device owner
             @Override
             public void onCallback(boolean value) {
                 if (value){
-                    new HelpActivity().isFriend(new com.teamsos.android.alertme.ui.help_and_support.Callback() {
+                    new CheckUser().isFriend(new Callback() {
                         @Override
                         public void onCallback(boolean value) {
                             if (value){//To check if the user is a friend
@@ -284,7 +292,19 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        //This is for the About menu item in the top-right hand corner
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.about) {
+            Toast.makeText(this, "AlertMe version "+ BuildConfig.VERSION_NAME, Toast.LENGTH_LONG).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -322,7 +342,19 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
         }catch (Exception e){
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
 
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        for(int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
+            spanString.setSpan(new ForegroundColorSpan(Color.BLACK), 0,     spanString.length(), 0);
+            item.setTitle(spanString);
+        }
+        return true;
+    }
     @Override
     public void onDestroy (){
         super.onDestroy();
@@ -366,7 +398,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
         return true;
     }
 
-    public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHolder>{
+    public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHolder>  {
         private List<Configuration> profileConfig;
 
         public UserInfoAdapter(List<Configuration> profileConfig){
@@ -380,6 +412,8 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
                     .inflate(R.layout.list_info_item_layout, parent, false);
             return new ViewHolder(itemView);
         }
+
+
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {

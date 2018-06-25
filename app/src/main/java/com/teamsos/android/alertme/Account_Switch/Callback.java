@@ -1,4 +1,4 @@
-package com.teamsos.android.alertme.ui.help_and_support;
+package com.teamsos.android.alertme.Account_Switch;
 
 public interface Callback {
     void onCallback(boolean value);
