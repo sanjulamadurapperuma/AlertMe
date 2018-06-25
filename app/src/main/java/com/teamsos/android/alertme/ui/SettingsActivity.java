@@ -96,7 +96,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
     private ValueEventListener userListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            //Lấy thông tin của user về và cập nhật lên giao diện
+            //Get the user's information and update to the interface
             listConfig.clear();
             myAccount = dataSnapshot.getValue(User.class);
 
@@ -116,7 +116,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-            //Có lỗi xảy ra, không lấy đc dữ liệu
+            //An error occured : not getting data
             Log.e(SettingsActivity.class.getName(), "loadPost:onCancelled", databaseError.toException());
         }
     };
@@ -191,7 +191,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
     }
 
     /**
-     * Khi click vào avatar thì bắn intent mở trình xem ảnh mặc định để chọn ảnh
+     * When you click on the avatar it opens the default viewer to select an image
      */
     private View.OnClickListener onAvatarClick = new View.OnClickListener() {
         @Override
@@ -403,7 +403,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
                                 .inflate(R.layout.dialog_edit_username, null);
                         final EditText input = (EditText)vewInflater.findViewById(R.id.edit_username);
                         input.setText(myAccount.name);
-                        /*Hiển thị dialog với dEitText cho phép người dùng nhập username mới*/
+                        /*Displaying a dialog with editText allows the user to enter a new username*/
                         new AlertDialog.Builder(SettingsActivity.this)
                                 .setTitle("Edit username")
                                 .setView(vewInflater)
@@ -448,7 +448,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
         }
 
         /**
-         * Cập nhật username mới vào SharedPreference và thay đổi trên giao diện
+         * Update the new username to SharedPreference and change the interface
          */
         private void changeUserName(String newName){
             userDB.child("name").setValue(newName);

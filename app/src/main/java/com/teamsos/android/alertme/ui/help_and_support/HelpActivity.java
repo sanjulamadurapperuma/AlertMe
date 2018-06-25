@@ -49,6 +49,7 @@ import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.security.auth.callback.Callback;
@@ -115,7 +116,7 @@ public class HelpActivity extends AppCompatActivity implements NavigationView.On
     @TargetApi(Build.VERSION_CODES.M)
     private String deviceInfo() {
         StringBuilder deviceName = new StringBuilder("--Support Info--\n");
-        ArrayList<String> userInfo = new ArrayList();
+        List<String> userInfo = new ArrayList();
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             TelephonyInfo telephonyInfo = TelephonyInfo.getInstance(this);
