@@ -144,7 +144,7 @@ public class HelpActivity extends AppCompatActivity implements NavigationView.On
             //Description
             String Description = "Description: " + BuildConfig.VERSION_CODE;
             //Version
-            String version = "Version: " + BuildConfig.VERSION_CODE;
+            String version = "Version: " + BuildConfig.VERSION_NAME;
             //App Name
             String appName = "App: com.AlertMe";
             // serial number

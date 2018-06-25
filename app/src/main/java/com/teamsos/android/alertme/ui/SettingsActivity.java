@@ -197,7 +197,11 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
 
         waitingDialog = new LovelyProgressDialog(SettingsActivity.this);
     }
-
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(SettingsActivity.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+        finish();
+    }
     /**
      * When you click on the avatar it opens the default viewer to select an image
      */

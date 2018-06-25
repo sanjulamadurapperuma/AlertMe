@@ -21,9 +21,8 @@ public class AppInformation extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setTitle("FAQ");
         textView = findViewById(R.id.appInfo);
-        textView.setText(String.valueOf("Version: " + BuildConfig.VERSION_CODE));
+        textView.setText(String.valueOf("Version: " + BuildConfig.VERSION_NAME));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ic_action_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

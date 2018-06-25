@@ -2,6 +2,7 @@ package com.teamsos.android.alertme;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -118,7 +119,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initTab();
         initFirebase();
     }
-
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
     private void initFirebase() {
         //Initialising Firebase Authentication (Email only)
         mAuth = FirebaseAuth.getInstance();
