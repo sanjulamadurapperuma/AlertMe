@@ -24,10 +24,11 @@
         </android.support.design.widget.AppBarLayout>
 
         <RelativeLayout
-        android:id="@+id/profile"
-        android:background="@color/grey_100"
-        app:layout_aspectRatio="150%"
-        app:layout_widthPercent="100%">
+            android:id="@+id/profile"
+            android:background="@color/grey_100"
+            android:layout_marginTop="20sp"
+            app:layout_aspectRatio="150%"
+            app:layout_widthPercent="100%">
         <LinearLayout
             android:layout_centerVertical="true"
             android:layout_width="match_parent"
