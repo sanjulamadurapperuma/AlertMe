@@ -38,13 +38,17 @@
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp"
         android:layout_toStartOf="@id/btnSend"
         android:background="@drawable/edittext_boder"
-        android:inputType="textCapSentences|textMultiLine"
-        android:maxLines="4"
+        android:drawablePadding="20dp"
+        android:inputType="textLongMessage"
+        android:maxLines="1"
         android:paddingLeft="7dp"
         android:paddingRight="7dp"
         android:textColorHint="#aeafaf"
-        android:textSize="15sp" />
+        android:textSize="15sp"
+        android:autoSizeTextType="uniform"/>
 
 </RelativeLayout>
