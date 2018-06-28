@@ -42,6 +42,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -76,6 +77,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     double latitude,longitude;
     Marker marker;
     View mapView;
+
 
 
     private DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("location");
@@ -195,6 +197,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setMyLocationEnabled(true);
             mMap.setOnMyLocationButtonClickListener(this);
             mMap.setOnMyLocationClickListener(this);
+            mMap.getUiSettings().setCompassEnabled(true);
         }
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -207,6 +210,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMap.clear();
                     marker = mMap.addMarker(new MarkerOptions().position(device).title("Device Marker").icon(BitmapDescriptorFactory.fromResource(R.drawable.sos_icon)));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(device));
+                    mMap.animateCamera(CameraUpdateFactory.zoomBy(10));
                 }
 
             }
@@ -219,6 +223,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
         if (mapView != null &&
                 mapView.findViewById(Integer.parseInt("1")) != null) {
+            View compassButton = mapView.findViewWithTag("GoogleMapCompass");//this works for me
+            RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) compassButton.getLayoutParams();
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            rlp.setMargins(30, 0, 0, 30);
             // Get the button view
             View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
             // and next place it, on bottom right (as Google Maps app)
