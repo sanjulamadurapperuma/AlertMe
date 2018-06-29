@@ -42,10 +42,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -76,6 +79,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     double latitude,longitude;
     Marker marker;
     View mapView;
+
 
 
     private DatabaseReference myRef = FirebaseDatabase.getInstance().getReference().child("location");
@@ -188,27 +192,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             bulidGoogleApiClient();
             mMap.setMyLocationEnabled(true);
             mMap.setOnMyLocationButtonClickListener(this);
             mMap.setOnMyLocationClickListener(this);
+            mMap.getUiSettings().setCompassEnabled(true);
         }
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Coordinate loc= new Coordinate();
-                if(dataSnapshot.getValue()!=null){
+                try{
                     loc.latitude = dataSnapshot.child("latitude").getValue(Double.class);
                     loc.longitude = dataSnapshot.child("longitude").getValue(Double.class);
-                    LatLng device = new LatLng(loc.latitude,loc.longitude);
-                    mMap.clear();
-                    marker = mMap.addMarker(new MarkerOptions().position(device).title("Device Marker").icon(BitmapDescriptorFactory.fromResource(R.drawable.sos_icon)));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(device));
                 }
-
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+                LatLng device = new LatLng(loc.latitude,loc.longitude);
+                mMap.clear();
+                marker = mMap.addMarker(new MarkerOptions().position(device).title("Device Marker").icon(BitmapDescriptorFactory.fromResource(R.drawable.sos_icon)));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(device));
+                //mMap.animateCamera(CameraUpdateFactory.zoomBy(10));
             }
 
             @Override
@@ -219,6 +225,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
         if (mapView != null &&
                 mapView.findViewById(Integer.parseInt("1")) != null) {
+            View compassButton = mapView.findViewWithTag("GoogleMapCompass");//this works for me
+            RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) compassButton.getLayoutParams();
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            rlp.setMargins(30, 0, 0, 30);
             // Get the button view
             View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
             // and next place it, on bottom right (as Google Maps app)
@@ -277,13 +288,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Coordinate loc= new Coordinate();
-                if(dataSnapshot.getValue()!=null){
+                try{
                     loc.latitude = dataSnapshot.child("latitude").getValue(Double.class);
                     loc.longitude = dataSnapshot.child("longitude").getValue(Double.class);
-                    LatLng device = new LatLng(loc.latitude,loc.longitude);
-                    marker.setPosition(device);
-                    updateMap();
                 }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+                LatLng device = new LatLng(loc.latitude,loc.longitude);
+                marker.setPosition(device);
+                updateMap();
+
 
             }
 
@@ -346,6 +361,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onLocationChanged(Location location) {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
+        Coordinate coordinate = new Coordinate();
+        coordinate.latitude = location.getLatitude();
+        coordinate.longitude = location.getLongitude();
         lastlocation = location;
         if(currentLocationmMarker != null)
         {
@@ -354,6 +372,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         Log.d("lat = ",""+latitude);
         LatLng latLng = new LatLng(location.getLatitude() , location.getLongitude());
+        FirebaseUser user = user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseDatabase.getInstance().getReference().child("phone").setValue(user.getUid());
+        FirebaseDatabase.getInstance().getReference().child("phone/" + user.getUid()).setValue(coordinate);
+
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Location");
