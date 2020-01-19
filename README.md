@@ -149,7 +149,7 @@ Distributed under the Apache License 2.0. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@s_arachchige](https://twitter.com/s_arachchige) - developer.sanjula@gmail.com
+Sanjula Madurapperuma - [@s_arachchige](https://twitter.com/s_arachchige) - developer.sanjula@gmail.com
 
 Project Link: [https://github.com/sanjulamadurapperuma/AlertMe](https://github.com/sanjulamadurapperuma/AlertMe)
 
