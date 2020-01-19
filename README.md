@@ -57,9 +57,6 @@
 -->
 
 * [About the Project](#about-the-project)
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
 * [Contributing](#contributing)
 * [License](#license)
 * [Contact](#contact)
@@ -75,8 +72,9 @@
 A Personal Security Companion App built to complement the AlertMe Pocket - a portable IoT device with advanced GPS, alarm and SOS functionality.
 
 <!-- GETTING STARTED -->
+<!--
 ## Getting Started
-
+-->
 <!--This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.-->
 <!--
