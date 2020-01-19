@@ -42,7 +42,7 @@
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
-
+<!--
 * [About the Project](#about-the-project)
   * [Built With](#built-with)
 * [Getting Started](#getting-started)
@@ -54,14 +54,24 @@
 * [License](#license)
 * [Contact](#contact)
 * [Acknowledgements](#acknowledgements)
+-->
+
+* [About the Project](#about-the-project)
+* [Getting Started](#getting-started)
+  * [Prerequisites](#prerequisites)
+  * [Installation](#installation)
+* [Contributing](#contributing)
+* [License](#license)
+* [Contact](#contact)
+* [Acknowledgements](#acknowledgements)
 
 
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-
+<!--
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
-
+-->
 A Personal Security Companion App built to complement the AlertMe Pocket - a portable IoT device with GPS and alarm functionality.
 
 <!-- GETTING STARTED -->
