@@ -72,7 +72,7 @@
 <!--
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 -->
-A Personal Security Companion App built to complement the AlertMe Pocket - a portable IoT device with GPS and alarm functionality.
+A Personal Security Companion App built to complement the AlertMe Pocket - a portable IoT device with advanced GPS, alarm and SOS functionality.
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -87,9 +87,9 @@ To get a local copy up and running follow these simple example steps.-->
 <!--```sh
 npm install npm@latest -g
 ```-->
-
+<!--
 ### Installation
-
+-->
 <!--
 1. Get a free API Key at [https://example.com](https://example.com)
 2. Clone the repo
@@ -142,7 +142,7 @@ Contributions are what make the open source community such an amazing place to b
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the Apache License 2.0. See `LICENSE` for more information.
 
 
 
@@ -170,6 +170,7 @@ Project Link: [https://github.com/sanjulamadurapperuma/AlertMe](https://github.c
 * [JVectorMap](http://jvectormap.com)
 * [Font Awesome](https://fontawesome.com)
 -->
+* Hans Billimoria
 
 
 
